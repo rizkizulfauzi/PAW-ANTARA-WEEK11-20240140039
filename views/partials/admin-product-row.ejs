@@ -1,0 +1,32 @@
+<%
+const isAvailable = product.stock > 0;
+const isLowStock = isAvailable && product.stock <= 5;
+let badgeLabel, badgeColor;
+if (!isAvailable) {
+  badgeLabel = 'Habis';
+  badgeColor = 'red';
+} else if (isLowStock) {
+  badgeLabel = 'Stok Menipis';
+  badgeColor = 'yellow';
+} else {
+  badgeLabel = 'Tersedia';
+  badgeColor = 'green';
+}
+%>
+<tr
+  class="admin-product-row border-t border-navy/5 dark:border-gray-700"
+  data-id="<%= product.id %>"
+  data-name="<%= product.name %>"
+  data-description="<%= product.description || '' %>"
+  data-price="<%= product.price %>"
+  data-stock="<%= product.stock %>"
+>
+  <td class="px-4 py-3 font-semibold text-navy dark:text-gray-100"><%= product.name %></td>
+  <td class="px-4 py-3 text-sunset font-bold">Rp<%= product.price.toLocaleString('id-ID') %></td>
+  <td class="px-4 py-3 text-gray-600 dark:text-gray-300"><%= product.stock %></td>
+  <td class="px-4 py-3"><%- include('badge', { label: badgeLabel, color: badgeColor }) %></td>
+  <td class="px-4 py-3 text-right space-x-2 whitespace-nowrap">
+    <button class="admin-edit-btn text-navy dark:text-gray-200 hover:text-sunset text-lg" data-id="<%= product.id %>" title="Edit produk">✏️</button>
+    <button class="admin-delete-btn text-red-500 hover:text-red-700 text-lg" data-id="<%= product.id %>" title="Hapus produk">🗑️</button>
+  </td>
+</tr>
