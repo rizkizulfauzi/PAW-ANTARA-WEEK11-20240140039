@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Admin - <%= storeName %></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            navy: {
+              DEFAULT: '#0b1f3f',
+              light: '#15294f',
+              dark: '#071528',
+            },
+            sunset: {
+              DEFAULT: '#f5a623',
+              dark: '#dc8e0f',
+            },
+          },
+        },
+      },
+    };
+  </script>
+  <script>
+    if (
+      localStorage.getItem('theme') === 'dark' ||
+      (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)
+    ) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors">
+
+  <!-- NAVBAR DASHBOARD -->
+  <header class="bg-navy border-b border-navy-dark sticky top-0 z-10">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div>
+        <h1 class="text-xl font-extrabold text-white tracking-wide">Dashboard Admin</h1>
+        <p class="text-xs text-sunset font-semibold uppercase tracking-wider"><%= storeName %></p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a
+          href="/"
+          class="px-4 py-2 text-xs font-bold uppercase tracking-wide rounded-full bg-navy-light text-white hover:bg-navy-dark transition-colors"
+        >‹ Kembali ke Toko</a>
+        <button
+          id="theme-toggle"
+          class="w-10 h-10 flex items-center justify-center rounded-full bg-navy-light text-white hover:bg-navy-dark transition-colors"
+          title="Ganti tema"
+        >
+          <span id="theme-icon">🌙</span>
+        </button>
+        <button
+          id="admin-logout-btn"
+          class="w-10 h-10 flex items-center justify-center rounded-full bg-sunset hover:bg-sunset-dark text-white transition-colors"
+          title="Logout"
+        >⏻</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-6">
+
+    <!-- STATISTIK RINGKAS, tiap kartu render dari data stats (bukan hardcode) -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <%- include('partials/stat-card', { label: 'Total Produk', value: stats.total, icon: '📦', accent: 'navy' }) %>
+      <%- include('partials/stat-card', { label: 'Tersedia', value: stats.available, icon: '✅', accent: 'green' }) %>
+      <%- include('partials/stat-card', { label: 'Stok Menipis', value: stats.lowStock, icon: '⚠️', accent: 'yellow' }) %>
+      <%- include('partials/stat-card', { label: 'Stok Habis', value: stats.outOfStock, icon: '🚫', accent: 'red' }) %>
+    </div>
+
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="font-extrabold text-navy dark:text-white uppercase tracking-wide text-sm">Kelola Produk</h2>
+      <button
+        id="admin-add-product-toggle"
+        class="px-4 py-1.5 text-xs font-bold uppercase tracking-wide rounded-full bg-sunset hover:bg-sunset-dark text-white transition-colors"
+      >+ Tambah Produk</button>
+    </div>
+
+    <!-- form tambah produk, toggle lewat tombol di atas -->
+    <div id="admin-add-product-panel" class="hidden bg-white dark:bg-gray-800 border border-navy/10 dark:border-gray-700 rounded-2xl p-4 mb-6">
+      <form id="admin-add-product-form" class="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
+        <div class="sm:col-span-2">
+          <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Nama Produk</label>
+          <input id="new-product-name" type="text" required class="w-full mt-1 px-3 py-2 text-sm rounded-lg border border-navy/20 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-sunset" />
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Harga</label>
+          <input id="new-product-price" type="number" min="0" required class="w-full mt-1 px-3 py-2 text-sm rounded-lg border border-navy/20 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-sunset" />
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Stok</label>
+          <input id="new-product-stock" type="number" min="0" required class="w-full mt-1 px-3 py-2 text-sm rounded-lg border border-navy/20 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-sunset" />
+        </div>
+        <div class="sm:col-span-4">
+          <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Deskripsi</label>
+          <input id="new-product-description" type="text" class="w-full mt-1 px-3 py-2 text-sm rounded-lg border border-navy/20 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-sunset" />
+        </div>
+        <div class="sm:col-span-4">
+          <button type="submit" class="bg-sunset hover:bg-sunset-dark text-white font-bold uppercase tracking-wide text-xs px-5 py-2.5 rounded-full transition-colors">
+            Simpan Produk
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- TABEL PRODUK, di-render server-side (SSR); edit/hapus ditangani JS -->
+    <div class="bg-white dark:bg-gray-800 border border-navy/10 dark:border-gray-700 rounded-2xl overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-navy/5 dark:bg-gray-700/50 text-left">
+            <tr>
+              <th class="px-4 py-3 font-bold text-navy dark:text-gray-200 uppercase text-xs tracking-wide whitespace-nowrap">Nama</th>
+              <th class="px-4 py-3 font-bold text-navy dark:text-gray-200 uppercase text-xs tracking-wide whitespace-nowrap">Harga</th>
+              <th class="px-4 py-3 font-bold text-navy dark:text-gray-200 uppercase text-xs tracking-wide whitespace-nowrap">Stok</th>
+              <th class="px-4 py-3 font-bold text-navy dark:text-gray-200 uppercase text-xs tracking-wide whitespace-nowrap">Status</th>
+              <th class="px-4 py-3 font-bold text-navy dark:text-gray-200 uppercase text-xs tracking-wide text-right whitespace-nowrap">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="admin-product-table-body">
+            <% products.forEach(function(product) { %>
+              <%- include('partials/admin-product-row', { product }) %>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+      <p id="admin-empty-state" class="<%= products.length ? 'hidden' : '' %> text-center text-gray-400 dark:text-gray-500 py-8">
+        Belum ada produk. Tambahkan produk pertama kamu.
+      </p>
+    </div>
+  </main>
+
+  <!-- MODAL: edit produk -->
+  <div id="edit-product-overlay" class="hidden fixed inset-0 z-40 flex items-center justify-center px-4">
+    <div id="edit-product-backdrop" class="absolute inset-0 bg-black/50"></div>
+    <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
+      <div class="bg-navy px-5 py-4 flex items-center justify-between">
+        <h3 class="text-white font-bold uppercase tracking-wide text-sm">✏️ Edit Produk</h3>
+        <button id="edit-product-close" class="text-white/70 hover:text-white text-xl">✕</button>
+      </div>
+      <form id="edit-product-form" class="px-5 py-5 space-y-3">
+        <input type="hidden" id="edit-product-id" />
+        <div>
+          <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Nama Produk</label>
+          <input id="edit-product-name" type="text" required class="w-full mt-1 px-3 py-2 text-sm rounded-lg border border-navy/20 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-sunset" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Harga</label>
+            <input id="edit-product-price" type="number" min="0" required class="w-full mt-1 px-3 py-2 text-sm rounded-lg border border-navy/20 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-sunset" />
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Stok</label>
+            <input id="edit-product-stock" type="number" min="0" required class="w-full mt-1 px-3 py-2 text-sm rounded-lg border border-navy/20 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-sunset" />
+          </div>
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Deskripsi</label>
+          <input id="edit-product-description" type="text" class="w-full mt-1 px-3 py-2 text-sm rounded-lg border border-navy/20 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-sunset" />
+        </div>
+        <p id="edit-product-error" class="hidden text-xs text-red-500"></p>
+        <button
+          type="submit"
+          class="w-full bg-sunset hover:bg-sunset-dark text-white font-bold uppercase tracking-wide py-2.5 rounded-full text-sm transition-colors"
+        >Simpan Perubahan</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- container notifikasi toast -->
+  <div id="toast-container" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-2"></div>
+
+  <script>
+    window.__INITIAL_PRODUCTS__ = <%- JSON.stringify(products) %>;
+  </script>
+
+  <script src="/js/store.js"></script>
+  <script src="/js/toast.js"></script>
+  <script src="/js/theme.js"></script>
+  <script src="/js/admin-dashboard.js"></script>
+</body>
+</html>
