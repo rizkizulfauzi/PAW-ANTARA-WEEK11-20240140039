@@ -30,9 +30,9 @@ function renderCartItem(item) {
         <p class="text-xs text-gray-400 dark:text-gray-500">Rp${item.price.toLocaleString('id-ID')} / item</p>
       </div>
       <div class="flex items-center gap-2">
-        <button class="cart-decrease w-6 h-6 rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300" data-id="${item.id}">-</button>
+        <button class="cart-decrease w-6 h-6 rounded-full bg-navy/10 dark:bg-gray-700 text-navy dark:text-gray-300 hover:bg-sunset hover:text-white transition-colors" data-id="${item.id}">-</button>
         <span class="text-sm w-5 text-center">${item.qty}</span>
-        <button class="cart-increase w-6 h-6 rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300" data-id="${item.id}">+</button>
+        <button class="cart-increase w-6 h-6 rounded-full bg-navy/10 dark:bg-gray-700 text-navy dark:text-gray-300 hover:bg-sunset hover:text-white transition-colors" data-id="${item.id}">+</button>
       </div>
     </div>
   `;
