@@ -1,0 +1,18 @@
+<%
+// Komponen kartu statistik - berbasis data (label, value, icon, accent color),
+// dipake berulang di dashboard admin lewat 1 partial yang sama.
+const accentMap = {
+  navy: 'text-navy dark:text-white',
+  green: 'text-green-600 dark:text-green-400',
+  yellow: 'text-yellow-600 dark:text-yellow-400',
+  red: 'text-red-600 dark:text-red-400',
+};
+const accentClass = accentMap[accent] || accentMap.navy;
+%>
+<div class="bg-white dark:bg-gray-800 border border-navy/10 dark:border-gray-700 rounded-2xl p-5 flex items-center gap-4">
+  <div class="text-3xl"><%= icon %></div>
+  <div>
+    <p class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide"><%= label %></p>
+    <p class="text-2xl font-extrabold <%= accentClass %>"><%= value %></p>
+  </div>
+</div>
